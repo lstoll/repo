@@ -1,4 +1,4 @@
-DFDIR="$(cd $(dirname $0)/.. && pwd)"
+DFDIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
 ENVDIR=$DFDIR/env.d
 
 export PATH=$DFDIR/bin:$PATH
