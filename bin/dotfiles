@@ -23,8 +23,3 @@ for f in $(ls -A $DFDIR/symlink/); do
 	ln -s $DFDIR/symlink/$f ~/$f
     fi
 done
-
-# Complain if env.sh not in profile
-if ! grep -q "$DFDIR/env.sh" ~/.profile; then
-   echo "** Add \"source $DFDIR/env.sh\" to your .profile"
-fi
