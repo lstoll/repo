@@ -1,9 +1,9 @@
 function lpass-ansible-vault-keyfile {
     [ -z "$1" ] && echo "Item name not specified" && return 1
-    lpass show --password $1 > ~/.ansible/vaultkey.txt
+    lpass show --password "$1-ansible-key" > ~/.ansible/vaultkey.txt
     [ $? == 0 ] || return 1
     chmod 0600 ~/.ansible/vaultkey.txt
-    export VAULT_PASSWORD_FILE=$HOME/.ansible/vaultkey.txt
+    export ANSIBLE_VAULT_PASSWORD_FILE=$HOME/.ansible/vaultkey.txt
 }
 
 function lpass-aws-keys {
