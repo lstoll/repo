@@ -12,5 +12,5 @@ function dm_env {
 }
 
 function dm_vpnfix {
-    sudo route -n add -net $(docker-machine ls default | awk '/^default/ {start = match($5, "[0-9]{3,3}\."); end = match($5, "\.[0-9]{1,3}:[0-9]{1,6}$"); print substr($5, start, end-start)".0/24"}') -interface $(VBoxManage showvminfo boot2docker-vm --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)
+    sudo route -n add -net $(docker-machine ip default | awk 'BEGIN {FS="."};{print $1"."$2"."$3".0/24"}') -interface $(VBoxManage showvminfo default --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)
 }
