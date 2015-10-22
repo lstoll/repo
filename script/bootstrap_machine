@@ -1,0 +1,31 @@
+#!/bin/bash
+
+echo "==> Triggering command line tools install"
+xcode-select --install
+
+echo "Press the any key when install is done..."
+read -n 1
+
+echo "==> Installing dotfiles"
+mkdir ~/src
+cd ~/src
+git clone https://github.com/lstoll/dotfiles"
+cd dotfiles
+./bin/dotfiles
+git remote rm origin
+git remote add origin git@github.com:lstoll/dotfiles.git
+
+echo "==> Installing homebrew"
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+echo "==> Installing homebrew-cask"
+brew install caskroom/cask/brew-cask
+
+echo "==> Installing OpenSC"
+brew install opensc
+
+echo "==> Installing Yubico ccid patcher"
+curl -sLo /tmp/ifd-yubico.pkg https://github.com/Yubico/ifd-yubico/releases/download/ifd-yubico-1.0.0/ifd-yubico.pkg
+open /tmp/ifd-yubico.pkg
+
+echo "==> Done, you will probably need to reboot"
