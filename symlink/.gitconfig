@@ -27,3 +27,5 @@
 [color "grep"]
 	filename = bold green
 	match = black yellow
+[url "git@github.com:"]
+	insteadOf = https://github.com/
