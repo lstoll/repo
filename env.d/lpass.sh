@@ -12,5 +12,5 @@ lpass-aws-keys() {
     AWS_ACCESS_KEY_ID=$(lpass show --username $1)
     [ $? = 0 ] || return 1
     export AWS_SECRET_ACCESS_KEY
-    AWS_SECRET_ACCESS_KEY=$(lpass show --username $1)
+    AWS_SECRET_ACCESS_KEY=$(lpass show --password $1)
 }
