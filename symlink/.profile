@@ -1,3 +1,3 @@
 export THESETUP_USER=lstoll
 
-source ~/src/dotfiles/env.sh
+source ~/src/github.com/lstoll/dotfiles/env.sh
