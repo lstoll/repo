@@ -1,4 +1,2 @@
-export GOPATH=$HOME/gocode
+export GOPATH=$HOME
 export PATH=$GOPATH/bin:$PATH
-# godep gets mad, sigh.
-#export GO15VENDOREXPERIMENT=1
