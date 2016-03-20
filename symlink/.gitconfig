@@ -1,6 +1,7 @@
 [user]
 	name = Lincoln Stoll
 	email = lincoln.stoll@gmail.com
+	signingkey = B26F07E7
 [color]
 	diff = auto
 	status = auto
@@ -27,3 +28,5 @@
 [color "grep"]
 	filename = bold green
 	match = black yellow
+[commit]
+	gpgsign = true
