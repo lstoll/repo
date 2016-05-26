@@ -1,0 +1,15 @@
+/*
+!/.gitignore
+!/.emacs.d
+!/.bashrc
+!/.agignore
+!/.env.d
+!/.git
+!/.gitconfig
+!/.profile
+!/.setup
+!/.ssh/config
+!/.ssh/*.pub
+!/.tmux.conf
+!/LICENCE
+!/README.md
