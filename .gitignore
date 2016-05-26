@@ -3,6 +3,7 @@
 !/.emacs.d
 !/.bashrc
 !/.agignore
+!/.env.sh
 !/.env.d
 !/.git
 !/.gitconfig
