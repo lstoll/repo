@@ -33,7 +33,7 @@ function vcs_ps1() {
   git_parent=0
   startdir="`pwd`"
   dir=$startdir
-  while [ "$dir" != "/" ] ; do
+  while [ "$dir" != "/" ] && [ "$dir" != "$HOME" ]; do
     if [ -d ".git" ] ; then git_parent=1 ; break ; fi
     if [ -d ".hg" ] ; then hg_parent=1 ; break ; fi
     cd "`dirname "$dir"`"
