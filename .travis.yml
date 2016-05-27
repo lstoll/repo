@@ -1,0 +1,15 @@
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      #sudo: required
+      env: BUILD=gocode
+    - os: osx
+      osx_image: xcode7.2
+      env: BUILD=setup
+
+before install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt-get update; fi
+
+script: .script/cibuild
