@@ -1,3 +1,9 @@
 #!/usr/bin/env bash
 
-echo "--> ${ENV}"
+if [ ! -f ".script/travis-build-${BUILD}" ]; then
+    echo "--> Error! No build script for ${BUILD}"
+    exit 1
+fi
+
+echo "--> Building for ${BUILD}"
+".script/travis-build-${BUILD}"
