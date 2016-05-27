@@ -7,6 +7,13 @@ matrix:
     - os: osx
       osx_image: xcode7.2
       env: BUILD=emacs
+    - os: linux
+      dist: trusty
+      env: BUILD=shellinit
+    - os: osx
+      osx_image: xcode7.2
+      env: BUILD=shellinit
+
 
 before install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi

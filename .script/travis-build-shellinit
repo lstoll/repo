@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+echo "--> Sourcing .profile"
+export HOME=$TRAVIS_BUILD_DIR
+. "$HOME/.profile"
