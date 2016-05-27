@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 
 echo "--> Bootstrapping emacs"
-sudo add-apt-repository -y ppa:cassou/emacs &&
-    sudo apt-get -qq update &&
-    sudo apt-get -qq -f install &&
-    sudo apt-get -qq install emacs24 emacs24-el;
+if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    brew install EMACS
+elif [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    sudo add-apt-repository -y ppa:cassou/emacs &&
+	sudo apt-get -qq update &&
+	sudo apt-get -qq -f install &&
+	sudo apt-get -qq install emacs24 emacs24-el;
+else
+    echo "--> ${TRAVIS_OS_NAME} is an unsupported OS"
+    exit 1
+fi
 
 echo "--> Running emacs"
 export HOME=$TRAVIS_BUILD_DIR
