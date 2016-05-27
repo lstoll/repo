@@ -1,4 +1,4 @@
-# dotfiles
-name says it all
+# (mono)repo
+[![Build Status](https://travis-ci.org/lstoll/repo.svg?branch=master)](https://travis-ci.org/lstoll/repo)
 
-`script/bootstrap_machine` has the bare minimum new machine stuff
+everything lives here
