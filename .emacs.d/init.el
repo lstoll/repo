@@ -55,3 +55,4 @@
 (require 'init-markdown)
 (require 'init-ag)
 (require 'init-dash-at-point)
+(require 'init-protobuf)
