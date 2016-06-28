@@ -15,6 +15,9 @@
 (eval-after-load 'flycheck
   '(add-hook 'flycheck-mode-hook #'flycheck-gometalinter-setup))
 
+;; Disable these, because meta takes care of it.
+(setq-default flycheck-disabled-checkers '(go-errcheck go-golint go-vet go-unconvert go-gofmt))
+
 ;; skips 'vendor' directories and sets GO15VENDOREXPERIMENT=1
 (setq flycheck-gometalinter-vendor t)
 ;; disable linters
@@ -25,6 +28,9 @@
 ;; Set different deadline (default: 5s)
 ;(setq flycheck-gometalinter-deadline "10s")
 
+;; Only run the 'fast' linters
+(setq flycheck-gometalinter-fast t)
+
 (defun my-go-mode-hook ()
   ;; Use goimports instead of go-fmt
   (setq gofmt-command "goimports")
@@ -34,6 +40,8 @@
   (setq tab-width 4)
 
   (setq ac-sources '(ac-source-go ac-source-yasnippet))
+
+  ;(setq flycheck-checkers '(go-build gometalinter))
   )
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
