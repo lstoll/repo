@@ -1,6 +1,7 @@
 [user]
 	name = Lincoln Stoll
-	email = lincoln.stoll@gmail.com
+	#email = lincoln.stoll@gmail.com
+	useConfigOnly = true
 	signingkey = B26F07E7
 [color]
 	diff = auto
