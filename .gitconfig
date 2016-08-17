@@ -19,9 +19,6 @@
 [github]
 	user = lstoll
 
-[include]
-  # For username / creds / etc
-  path = ~/.gitconfig.local
 [push]
 	default = simple
 [credential]
@@ -31,3 +28,7 @@
 	match = black yellow
 [commit]
 	gpgsign = true
+
+[include]
+  # For username / creds / etc
+  path = ~/.gitconfig.local
