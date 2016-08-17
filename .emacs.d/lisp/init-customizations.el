@@ -32,9 +32,11 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Fuck GUI shit
-(menu-bar-mode -1)
-(scroll-bar-mode -1) 
-(tool-bar-mode -1)
+(if (display-graphic-p)
+    (progn
+      (menu-bar-mode -1)
+      (scroll-bar-mode -1)
+      (tool-bar-mode -1)))
 
 ;; Always highlight parens
 (show-paren-mode 1)
