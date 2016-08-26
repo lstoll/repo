@@ -32,3 +32,5 @@
 [include]
   # For username / creds / etc
   path = ~/.gitconfig.local
+[core]
+	excludesfile = /Users/lincoln.stoll/.gitignore_global
