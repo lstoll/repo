@@ -8,7 +8,8 @@ function parse_git_branch {
   branch_pattern="^# On branch ([^${IFS}]*)"
   remote_pattern="# Your branch is (.*) of"
   diverge_pattern="# Your branch and (.*) have diverged"
-  if [[ ! ${git_status}} =~ "working tree clean" ]]; then
+  dirty_pattern="working (.*) clean"
+  if [[ ! ${git_status}} =~ ${dirty_pattern} ]]; then
     state="⚡"
   fi
   # add an else if or two here if you want to get more specific
