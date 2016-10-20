@@ -1,16 +1,16 @@
 (require-package 'go-mode)
 (require-package 'go-autocomplete)
 (require-package 'flycheck-gometalinter)
+(require-package 'go-eldoc)
 
 ; dafuq is up with autoloads?
-;(load "go-mode.el")
+(load "go-mode.el")
 
 (require 'go-autocomplete)
 (setq-default ac-go-expand-arguments-into-snippets t)
 
-; Installed by thesetup
-(load-file (concat "/Users/" (getenv "USER") "/src/golang.org/x/tools/cmd/guru/go-guru.el"))
-(load-file (concat "/Users/" (getenv "USER") "/src/golang.org/x/tools/refactor/rename/go-rename.el"))
+; Needs to be installed
+(load-file (concat (getenv "HOME") "/src/golang.org/x/tools/refactor/rename/go-rename.el"))
 
 (eval-after-load 'flycheck
   '(add-hook 'flycheck-mode-hook #'flycheck-gometalinter-setup))
@@ -21,7 +21,7 @@
 ;; skips 'vendor' directories and sets GO15VENDOREXPERIMENT=1
 (setq flycheck-gometalinter-vendor t)
 ;; disable linters
-;(setq flycheck-gometalinter-disable-linters '("gotype" "gocyclo"))
+(setq flycheck-gometalinter-disable-linters '("vetshadow")) ; this is noisy with if err := blocks
 ;; Only enable selected linters
 ;(setq flycheck-gometalinter-disable-all t)
 ;(setq flycheck-gometalinter-enable-linters '("golint"))
@@ -31,9 +31,10 @@
 ;; Only run the 'fast' linters
 (setq flycheck-gometalinter-fast t)
 
-(defun my-go-mode-hook ()
+(defun go-mode-setup ()
+  (go-eldoc-setup)
   ;; Use goimports instead of go-fmt
-  (setq gofmt-command "goimports")
+  (setq gofmt-command "goreturns")
   ;; Call Gofmt before saving
   (add-hook 'before-save-hook 'gofmt-before-save)
 
@@ -41,8 +42,8 @@
 
   (setq ac-sources '(ac-source-go ac-source-yasnippet))
 
-  ;(setq flycheck-checkers '(go-build gometalinter))
+  (setq flycheck-checkers '(go-build go-test gometalinter))
   )
-(add-hook 'go-mode-hook 'my-go-mode-hook)
+(add-hook 'go-mode-hook 'go-mode-setup)
 
 (provide 'init-go)
