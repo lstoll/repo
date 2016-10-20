@@ -13,8 +13,6 @@
 
 (server-start)
 
-(load-theme 'tango-dark)
-
 ;;----------------------------------------------------------------------------
 ;; Bootstrap config
 ;;----------------------------------------------------------------------------
@@ -24,14 +22,16 @@
 (require 'init-elpa)      ;; Machinery for installing required packages
 (require 'init-exec-path) ;; Set up $PATH
 
+(require 'init-theme)
 (require 'init-keybindings) ;; Set up our keybindings
 
-(require 'init-maxframe) ;; Get that big size
+(if (eq system-type 'gnu/linux)
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  )
 
-;;----------------------------------------------------------------------------
-;; Allow users to provide an optional "init-preload-local.el"
-;;----------------------------------------------------------------------------
-(require 'init-preload-local nil t)
+(if (eq system-type 'darwin)
+  (require 'init-maxframe) ;; Get that big size
+  )
 
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
@@ -54,3 +54,4 @@
 (require 'init-ag)
 (require 'init-dash-at-point)
 (require 'init-protobuf)
+(require 'init-terraform)
