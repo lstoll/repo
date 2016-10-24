@@ -9,9 +9,6 @@
 (require 'go-autocomplete)
 (setq-default ac-go-expand-arguments-into-snippets t)
 
-; Needs to be installed
-(load-file (concat (getenv "HOME") "/src/golang.org/x/tools/refactor/rename/go-rename.el"))
-
 (eval-after-load 'flycheck
   '(add-hook 'flycheck-mode-hook #'flycheck-gometalinter-setup))
 
@@ -34,7 +31,7 @@
 (defun go-mode-setup ()
   (go-eldoc-setup)
   ;; Use goimports instead of go-fmt
-  (setq gofmt-command "goreturns")
+  (setq gofmt-command "goimports")
   ;; Call Gofmt before saving
   (add-hook 'before-save-hook 'gofmt-before-save)
 
