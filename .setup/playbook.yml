@@ -3,10 +3,58 @@
   become: true
   become_user: root
   tasks:
+  - apt_key: url=https://dl.google.com/linux/linux_signing_key.pub state=present
+  - apt_repository: repo='deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' state=present filename='google-chrome'
+  - apt_key: url=https://toolbelt.heroku.com/apt/release.key state=present
+  - apt_repository: repo='deb http://toolbelt.heroku.com/ubuntu ./' state=present filename='heroku'
+  - apt_key: url=https://bazel.io/bazel-release.pub.gpg state=present
+  - apt_repository: repo='deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8' state=present filename='heroku'
   - apt: update_cache=yes cache_valid_time=3600
   - name: install packages
     apt: name={{item}} state=latest
     with_items:
       - ansible
+      - google-chrome-stable
+      - awscli
+      - gnupg2
+      - gnupg-agent
+      - pinentry-gnome3
+      - scdaemon
+      - pcscd
+      - yubikey-personalization
+      - libusb-1.0-0-dev
+      - heroku
+      - shellcheck
+      - bazel
+      - libssl-dev
+      - libreadline-dev
+      - lastpass-cli
+      - jq
   - name: Install docker-compose
     get_url: url=https://github.com/docker/compose/releases/download/1.8.1/docker-compose-Linux-x86_64 dest=/usr/local/bin/docker-compose mode=0755
+
+  - name: Find go version
+    command: sh -c "/usr/local/go/bin/go version | grep -Po '(?<=go)([\w\.]+)'"
+    register: goversion
+    ignore_errors: True
+  - name: Download go tarball
+    get_url: url="https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz" dest="/tmp/go.tgz"
+    when: goversion.stdout != "1.7.3"
+    register: got_go
+  - name: Remove old go install
+    command: rm -fr /usr/local/go
+    when: got_go.changed
+  - name: Extract go tarball
+    unarchive: src=/tmp/go.tgz dest=/usr/local
+    when: goversion.stdout != "1.7.3"
+
+- hosts: all
+  become: true
+  become_user: lstoll
+  tasks:
+  - name: Install rbenv
+    git: repo=https://github.com/rbenv/rbenv.git dest={{ansible_env.HOME}}/.rbenv update=yes
+  - name: Install ruby-build
+    git: repo=https://github.com/rbenv/ruby-build.git dest={{ansible_env.HOME}}/.rbenv/plugins/ruby-build update=yes
+  - name: Install go linting tools
+    shell: sudo -iu lstoll sh -c "go get -u github.com/alecthomas/gometalinter && gometalinter -i"
