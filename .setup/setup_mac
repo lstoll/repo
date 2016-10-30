@@ -5,6 +5,17 @@ echo "--> Setting defaults"
 defaults write com.googlecode.iterm2 "PrefsCustomFolder" -string "$HOME/.config/iterm2"
 defaults write com.googlecode.iterm2 "LoadPrefsFromCustomFolder" -bool true
 
+if ! defaults read /Library/Preferences/com.apple.loginwindow.plist LoginwindowText > /dev/null; then
+    sudo defaults write /Library/Preferences/com.apple.loginwindow.plist LoginwindowText -string "This computer belongs to @lstoll. Please call +1 216 505 1155 if found."
+fi
+
+if [ `defaults read /Library/Preferences/com.apple.loginwindow.plist GuestEnabled` == "1" ]; then
+    sudo defaults write /Library/Preferences/com.apple.loginwindow.plist GuestEnabled -bool NO
+fi
+
+defaults write com.apple.screensaver askForPassword -int 1
+defaults write com.apple.screensaver askForPasswordDelay -int 0
+
 if [ ! -f /usr/local/bin/brew ]; then
     echo "--> Installing Homebrew"
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
