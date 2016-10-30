@@ -14,6 +14,9 @@
     ("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
  '(fci-rule-color "#515151")
  '(flycheck-navigation-minimum-level (quote error))
+ '(package-selected-packages
+   (quote
+    (terraform-mode flycheck-protobuf protobuf-mode dash-at-point helm-ag ag markdown-mode+ coffee-mode yaml-mode go-eldoc flycheck-gometalinter go-autocomplete go-mode json-mode popwin enh-ruby-mode highlight-indentation auto-complete yasnippet flycheck helm-projectile projectile helm maxframe color-theme-sanityinc-tomorrow exec-path-from-shell fullframe)))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote

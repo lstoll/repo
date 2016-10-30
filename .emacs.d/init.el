@@ -34,6 +34,7 @@
 
 (if (eq system-type 'gnu/linux)
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  (split-window-right)
   )
 
 (if (eq system-type 'darwin)
@@ -63,4 +64,3 @@
 (require 'init-protobuf)
 (require 'init-terraform)
 
-(split-window-right)
