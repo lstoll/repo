@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "--> Setting defaults"
+defaults write com.googlecode.iterm2 "PrefsCustomFolder" -string "$HOME/.config/iterm2"
+defaults write com.googlecode.iterm2 "LoadPrefsFromCustomFolder" -bool true
+
 if [ ! -f /usr/local/bin/brew ]; then
     echo "--> Installing Homebrew"
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
