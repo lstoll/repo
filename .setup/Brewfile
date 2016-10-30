@@ -19,3 +19,4 @@ brew 'the_silver_searcher'
 cask ENV['HOME']+'/.setup/brews/font-meslo-lg.rb'
 mas 'Monodraw', id: 920404675
 mas 'Monosnap', id: 540348655
+cask 'gpgtools'
