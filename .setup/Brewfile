@@ -20,3 +20,13 @@ cask ENV['HOME']+'/.setup/brews/font-meslo-lg.rb'
 mas 'Monodraw', id: 920404675
 mas 'Monosnap', id: 540348655
 cask 'gpgtools'
+cask 'Sonos'
+cask 'docker'
+cask 'Slack'
+cask 'Things'
+mas 'Wunderlist', id: 410628904
+cask 'Shimo'
+mas 'Acorn 4', id: 634108295
+mas 'GIF Brewery 3', id: 1081413713
+cask 'irccloud'
+cask 'quip'
