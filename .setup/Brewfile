@@ -1,3 +1,6 @@
+require 'socket'
+sfdclaptop = Socket.gethostname =~ /^lincolnsto-ltm/
+
 cask_args appdir: '/Applications'
 tap 'caskroom/cask'
 tap 'caskroom/fonts'
@@ -5,8 +8,8 @@ tap 'caskroom/fonts'
 brew 'emacs', args: ['with-cocoa', 'with-modules']
 cask 'google-chrome'
 cask 'java' unless system '/usr/libexec/java_home --failfast'
-cask '1Password'
-cask 'Arq'
+cask '1Password' unless sfdclaptop
+cask 'Arq' unless sfdclaptop
 cask 'google-drive'
 cask 'iterm2'
 brew 'mas'
@@ -20,13 +23,13 @@ cask ENV['HOME']+'/.setup/brews/font-meslo-lg.rb'
 mas 'Monodraw', id: 920404675
 mas 'Monosnap', id: 540348655
 cask 'gpgtools'
-cask 'Sonos'
+cask 'Sonos' unless sfdclaptop
 cask 'docker'
 cask 'Slack'
 cask 'Things'
 mas 'Wunderlist', id: 410628904
-cask 'Shimo'
+cask 'Shimo' unless sfdclaptop
 mas 'Acorn 4', id: 634108295
-mas 'GIF Brewery 3', id: 1081413713
+mas 'GIF Brewery 3', id: 1081413713 unless sfdclaptop
 cask 'irccloud'
 cask 'quip'
