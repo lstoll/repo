@@ -5,6 +5,7 @@ cask_args appdir: '/Applications'
 tap 'caskroom/cask'
 tap 'caskroom/fonts'
 
+brew 'bash-completion'
 brew 'emacs', args: ['with-cocoa', 'with-modules']
 cask 'google-chrome'
 cask 'java' unless system '/usr/libexec/java_home --failfast'
