@@ -1,0 +1,21 @@
+cask_args appdir: '/Applications'
+tap 'caskroom/cask'
+tap 'caskroom/fonts'
+
+brew 'emacs', args: ['with-cocoa', 'with-modules']
+cask 'google-chrome'
+cask 'java' unless system '/usr/libexec/java_home --failfast'
+cask '1Password'
+cask 'Arq'
+cask 'google-drive'
+cask 'iterm2'
+brew 'mas'
+brew 'rbenv'
+brew 'go'
+brew 'protobuf'
+brew 'lastpass-cli'
+brew 'git'
+brew 'the_silver_searcher'
+cask ENV['HOME']+'/.setup/brews/font-meslo-lg.rb'
+mas 'Monodraw', id: 920404675
+mas 'Monosnap', id: 540348655
