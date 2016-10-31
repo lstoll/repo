@@ -41,6 +41,14 @@
   (require 'init-maxframe) ;; Get that big size
   )
 
+(if (not (display-graphic-p))
+    (progn (require 'mwheel)
+	   (require 'mouse)
+	   (xterm-mouse-mode t)
+	   (mouse-wheel-mode t)
+	   (global-set-key [mouse-4] 'previous-line)
+	   (global-set-key [mouse-5] 'next-line)))
+
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
@@ -63,4 +71,3 @@
 (require 'init-dash-at-point)
 (require 'init-protobuf)
 (require 'init-terraform)
-
