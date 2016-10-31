@@ -1,3 +1,7 @@
+# Terminal.app compat
 "\e\e[D": backward-word
 "\e\e[C": forward-word
+# Xterm compat
+"\e[1;9C": forward-word
+"\e[1;9D": backward-word
 
