@@ -18,7 +18,10 @@
 ;; skips 'vendor' directories and sets GO15VENDOREXPERIMENT=1
 (setq flycheck-gometalinter-vendor t)
 ;; disable linters
-(setq flycheck-gometalinter-disable-linters '("vetshadow")) ; this is noisy with if err := blocks
+(setq flycheck-gometalinter-disable-linters
+      '("vetshadow" ; this is noisy with if err := blocks
+	"gotype")) ; This is bad with stale data, build/test overrides
+
 ;; Only enable selected linters
 ;(setq flycheck-gometalinter-disable-all t)
 ;(setq flycheck-gometalinter-enable-linters '("golint"))
