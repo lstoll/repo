@@ -18,6 +18,8 @@ brew 'rbenv'
 brew 'go'
 brew 'protobuf'
 brew 'lastpass-cli'
+cask 'lastpass'
+mas 'Lastpass', id: 926036361
 brew 'git'
 brew 'the_silver_searcher'
 cask ENV['HOME']+'/.setup/brews/font-meslo-lg.rb'
