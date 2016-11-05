@@ -1,5 +1,5 @@
 (require-package 'protobuf-mode)
-(require-package 'flycheck-protobuf)
+;; (require-package 'flycheck-protobuf) ; is this gone?
 
 (setq protobuf-imenu-generic-expression
       '(("service" "^service *\\(.*\\) {" 1)
