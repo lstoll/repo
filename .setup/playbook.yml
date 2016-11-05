@@ -30,8 +30,14 @@
       - libreadline-dev
       - lastpass-cli
       - jq
+      - emacs
+      - libglib2.0-dev
+      - libgnome-keyring-dev
   - name: Install docker-compose
     get_url: url=https://github.com/docker/compose/releases/download/1.8.1/docker-compose-Linux-x86_64 dest=/usr/local/bin/docker-compose mode=0755
+  - name: Build gnome-keyring
+    command: make chdir=/usr/share/doc/git/contrib/credential/gnome-keyring creates=/usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
+
 
   - name: Find go version
     command: sh -c "/usr/local/go/bin/go version | grep -Po '(?<=go)([\w\.]+)'"
