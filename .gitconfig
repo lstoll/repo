@@ -1,6 +1,6 @@
 [user]
 	name = Lincoln Stoll
-	#email = lincoln.stoll@gmail.com
+	# Force a config to be set
 	useConfigOnly = true
 	signingkey = B26F07E7
 [color]
@@ -22,7 +22,7 @@
 [push]
 	default = simple
 [credential]
-	helper = osxkeychain
+	helper = helper
 [color "grep"]
 	filename = bold green
 	match = black yellow
@@ -33,4 +33,4 @@
   # For username / creds / etc
   path = ~/.gitconfig.local
 [core]
-	excludesfile = /Users/lincoln.stoll/.gitignore_global
+	excludesfile = ~/.gitignore_global
