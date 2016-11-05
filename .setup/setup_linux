@@ -1,17 +1,25 @@
 #!/bin/bash
 set -euo pipefail
 
+. /etc/lsb-release
+
 # TODO - why do we have to do this.
 function finish {
-  mv ~/.netrc.tmp ~/.netrc
+    if [ -f ~/.netrc.tmp ]; then
+        mv ~/.netrc.tmp ~/.netrc
+    fi
 }
 trap finish EXIT
-echo "--> Temporarily relocating netrc"
-mv ~/.netrc ~/.netrc.tmp
+if [ -f ~/.netrc ]; then
+    echo "--> Temporarily relocating netrc"
+    mv ~/.netrc ~/.netrc.tmp
+fi
 
 if [ ! -f /usr/bin/ansible-playbook ]; then
-    sudo apt-get install -y software-properties-common
-    sudo apt-add-repository -y ppa:ansible/ansible
+    if [ "$DISTRIB_CODENAME" == "xenial" ]; then
+        sudo apt-get install -y software-properties-common
+        sudo apt-add-repository -y ppa:ansible/ansible
+    fi
     sudo apt-get update
     sudo apt-get install -y ansible
 fi
