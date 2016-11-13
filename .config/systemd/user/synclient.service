@@ -1,0 +1,10 @@
+[Unit]
+Description=Synclient Settings
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/synclient RightButtonAreaLeft=0
+ExecStart=/usr/bin/synclient RightButtonAreaTop=0
+
+[Install]
+WantedBy=default.target

@@ -34,6 +34,8 @@
       - libglib2.0-dev
       - libgnome-keyring-dev
       - silversearcher-ag
+      - vim
+      - gnome-contacts
   - name: Install docker-compose
     get_url: url=https://github.com/docker/compose/releases/download/1.8.1/docker-compose-Linux-x86_64 dest=/usr/local/bin/docker-compose mode=0755
   - name: Build gnome-keyring
@@ -55,13 +57,24 @@
     unarchive: src=/tmp/go.tgz dest=/usr/local
     when: goversion.stdout != "1.7.3"
 
+  - name: Install sonos controller
+    apt: deb=http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/dist/sonos-controller-unofficial-latest-amd64.deb
+
 - hosts: all
   become: true
   become_user: lstoll
   tasks:
+  - name: Set gnome keyboard mappings
+    command: gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
+
   - name: Install rbenv
     git: repo=https://github.com/rbenv/rbenv.git dest={{ansible_env.HOME}}/.rbenv update=yes
+
   - name: Install ruby-build
     git: repo=https://github.com/rbenv/ruby-build.git dest={{ansible_env.HOME}}/.rbenv/plugins/ruby-build update=yes
+
   - name: Install go linting tools
-    shell: sudo -iu lstoll sh -c "go get -u github.com/alecthomas/gometalinter && gometalinter -i"
+    shell: go get -u github.com/alecthomas/gometalinter && gometalinter -i
+
+  - name: Enable synclient customizations
+    shell: systemctl --user && systemctl --user enable synclient
