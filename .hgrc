@@ -1,0 +1,6 @@
+[ui]
+username = Lincoln Stoll <lincoln.stoll@gmail.com>
+
+[extensions]
+mercurial_keyring =
+hggit = 
