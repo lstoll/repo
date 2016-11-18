@@ -5,6 +5,7 @@ cask_args appdir: '/Applications'
 tap 'caskroom/cask'
 tap 'caskroom/fonts'
 
+brew 'readline'
 brew 'bash-completion'
 brew 'emacs', args: ['with-cocoa', 'with-modules']
 cask 'google-chrome'
