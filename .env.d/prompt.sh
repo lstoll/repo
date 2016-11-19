@@ -1,5 +1,6 @@
 hg_ps1() {
-    hg prompt "{ on {branch}}{ at {bookmark}}{status}{ ↑{outgoing}}{outgoing|count}{ ↓{incoming}}{incoming|count}" 2> /dev/null
+    #hg prompt "<{branch}{@{bookmark}}{status}{↑{outgoing}}{↓{incoming}}>" 2> /dev/null
+    vcprompt -f " <%b%u%m>"
 }
 
 function parse_git_branch {
@@ -42,8 +43,7 @@ function vcs_ps1() {
   done
   cd "$startdir"
 
-  # Not working for now - don't have the extension. Saving for the day we care..
-  # if [ $hg_parent == 1 ] ; then echo "$(hg_ps1)" ; fi
+  if [ $hg_parent == 1 ] ; then echo "$(hg_ps1)" ; fi
   if [ $git_parent == 1 ] ; then echo "$(parse_git_branch git)" ; fi
 }
 
