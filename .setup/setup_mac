@@ -41,3 +41,17 @@ fi
 if [ ! -d "$HOME/Library/Python/2.7/lib/python/site-packages/hggit" ]; then 
     pip install --user hg-git
 fi
+
+echo "--> Installing arcanist"
+if [ ! -d $HOME/src/github.com/phacility/libphutil ]; then
+    git clone https://github.com/phacility/libphutil.git $HOME/src/github.com/phacility/libphutil
+fi
+if [ ! -d $HOME/src/github.com/phacility/arcanist ]; then
+    git clone https://github.com/phacility/arcanist.git $HOME/src/github.com/phacility/arcanist
+fi
+(cd $HOME/src/github.com/phacility/libphutil &&
+ test -n "$(git status --porcelain)" &&
+ git fetch && git reset --hard origin/master)
+(cd $HOME/src/github.com/phacility/arcanist &&
+ test -n "$(git status --porcelain)" &&
+ git fetch && git reset --hard origin/master)
