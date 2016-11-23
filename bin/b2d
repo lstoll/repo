@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+data_path=/media/data/boot2docker
+b2d_version=v1.12.3
+b2d_mem=4096
+b2d_cpus=4
+b2d_disk=65536
+
+say() {
+    echo "--> $@"
+}
+
+ensure_vm() {
+    mkdir -p "$data_path"
+    if [ ! -f "$data_path/boot2docker.iso" ]; then
+	say "Downloading boot2docker.iso $b2d_version"
+	curl -sLo "$data_path/boot2docker.iso" "https://github.com/boot2docker/boot2docker/releases/download/$b2d_version/boot2docker.iso"
+    fi
+    if ! vboxmanage list vms | grep -q "boot2docker"; then
+	say "VM Doesn't exist, creating"
+	vboxmanage createvm --name "boot2docker" --ostype Linux_64 --register
+	vboxmanage modifyvm "boot2docker" --memory $b2d_mem --cpus $b2d_cpus --acpi on --pae on --hwvirtex on --nestedpaging on
+	vboxmanage modifyvm "boot2docker" --boot1 dvd --boot2 none --boot3 none --boot4 none
+	vboxmanage modifyvm "boot2docker" --vram 8 --audio none --accelerate3d off --accelerate2dvideo off --usb off
+
+	vboxmanage modifyvm "boot2docker" --nic1 nat
+	vboxmanage modifyvm "boot2docker" --nictype1 virtio
+	vboxmanage modifyvm "boot2docker" --natpf1 "docker,tcp,127.0.0.1,2376,,2376"
+	vboxmanage modifyvm "boot2docker" --natpf1 "b2d-ssh,tcp,127.0.0.1,2222,,22"
+
+	vboxmanage storagectl "boot2docker" --name "IDE" --add ide
+	vboxmanage storageattach "boot2docker" --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium "$data_path/boot2docker.iso"
+
+	vboxmanage storagectl "boot2docker" --name "SCSI" --add scsi
+	fallocate -l "${b2d_disk}M" "$data_path/storage.img"
+	mkfs.ext4 -L boot2docker-data -F "$data_path/storage.img"
+	vboxmanage convertdd "$data_path/storage.img" "$data_path/storage.vdi"
+	rm "$data_path/storage.img"
+	vboxmanage storageattach "boot2docker" --storagectl "SCSI" --device 0 --port 0 --type hdd --medium "$data_path/storage.vdi"
+
+	vboxmanage sharedfolder add "boot2docker" --name user-home --hostpath $HOME --automount
+    fi
+}
+
+start_vm() {
+    say "Starting VM"
+    if ! vboxmanage showvminfo "boot2docker" | grep -q "running (since"; then
+	vboxmanage startvm "boot2docker" --type headless || true
+    fi
+}
+
+configure_vm() {
+    # TODO - wait for SSH to be up?
+#    openssl req -subj "/CN=127.0.0.1" -sha256 -new -key ${DOCKER_MACHINES_HOME}/${B2D_MACHINE_NAME}/server-key.pem -out ${DOCKER_MACHINES_HOME}/${B2D_MACHINE_NAME}/server.csr
+
+    #server_pem=`$0 ssh "sudo openssl x509 -noout -text -in /var/lib/boot2docker/tls/server.pem"`
+    #echo $server_pem
+    ssh "mkdir -p $HOME && sudo mount -t vboxsf user-home $HOME"
+}
+
+stop_vm() {
+    say "Stopping VM"
+    VBoxManage controlvm boot2docker acpipowerbutton || true
+}
+
+delete_vm() {
+    say "Deleting VM"
+    vboxmanage unregistervm "boot2docker" --delete
+}
+
+ssh() {
+    sshpass -p tcuser ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p 2222 docker@127.0.0.1 $@
+}
+
+env() {
+    mkdir -p ~/.docker/boot2docker
+    sshpass -p tcuser scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P 2222 docker@127.0.0.1:.docker/* ~/.docker/boot2docker/ 1>&2
+    echo "export DOCKER_CERT_PATH=$HOME/.docker/boot2docker"
+    echo "export DOCKER_TLS_VERIFY=1"
+    echo "export DOCKER_HOST=tcp://127.0.0.1:2376"
+}
+
+case "${1:-}" in
+    up)
+        ensure_vm
+	start_vm
+	configure_vm
+        ;;
+    delete)
+	stop_vm
+	delete_vm
+	;;
+    ssh)
+	ssh "${@:2}"
+	;;
+    env)
+	env
+	;;
+    *)
+        cat <<EOF
+USAGE:
+$0 up            Bring up the VM, creating it if needed
+$0 env           Output the environment for connecting to this VM
+$0 delete        Delete the VM
+$0 ssh           SSH in to the VM
+EOF
+exit 1
+esac
