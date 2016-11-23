@@ -9,6 +9,8 @@
   - apt_repository: repo='deb http://toolbelt.heroku.com/ubuntu ./' state=present filename='heroku'
   - apt_key: url=https://bazel.io/bazel-release.pub.gpg state=present
   - apt_repository: repo='deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8' state=present filename='heroku'
+  - apt_key: keyserver=hkp://ha.pool.sks-keyservers.net:80 id=58118E89F3A912897C070ADBF76221572C52609D
+  - apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-trusty main' state=present filename=docker
   - apt: update_cache=yes cache_valid_time=3600
   - name: install packages
     apt: name={{item}} state=latest
@@ -18,17 +20,18 @@
       - awscli
       - gnupg2
       - gnupg-agent
-      - pinentry-gnome3
+      #- pinentry-gnome3
+      - pinentry-gtk2
       - scdaemon
       - pcscd
       - yubikey-personalization
       - libusb-1.0-0-dev
       - heroku
-      - shellcheck
+      #- shellcheck
       - bazel
       - libssl-dev
       - libreadline-dev
-      - lastpass-cli
+      #- lastpass-cli
       - jq
       - emacs
       - libglib2.0-dev
@@ -36,10 +39,13 @@
       - silversearcher-ag
       - vim
       - gnome-contacts
+      - shutter
+      - docker-engine
   - name: Install docker-compose
     get_url: url=https://github.com/docker/compose/releases/download/1.8.1/docker-compose-Linux-x86_64 dest=/usr/local/bin/docker-compose mode=0755
   - name: Build gnome-keyring
     command: make chdir=/usr/share/doc/git/contrib/credential/gnome-keyring creates=/usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
+  # TODO - set mode of helper to 0755
 
 
   - name: Find go version
@@ -57,12 +63,9 @@
     unarchive: src=/tmp/go.tgz dest=/usr/local
     when: goversion.stdout != "1.7.3"
 
-  - name: Install sonos controller
-    apt: deb=http://pascalopitz.github.io/unoffical-sonos-controller-for-linux/dist/sonos-controller-unofficial-latest-amd64.deb
-
 - hosts: all
   become: true
-  become_user: lstoll
+  become_user: lincoln.stoll
   tasks:
   - name: Set gnome keyboard mappings
     command: gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
@@ -76,5 +79,18 @@
   - name: Install go linting tools
     shell: go get -u github.com/alecthomas/gometalinter && gometalinter -i
 
-  - name: Enable synclient customizations
-    shell: systemctl --user && systemctl --user enable synclient
+  - name: Install go dev deps
+    shell: go get -u {{item}}
+    with_items:
+      - github.com/nsf/gocode
+      - github.com/rogpeppe/godef
+      - golang.org/x/tools/cmd/goimports
+
+# xenial kernel
+# nomachine
+
+# curl -L https://github.com/docker/machine/releases/download/v0.8.2/docker-machine-`uname -s`-`uname -m` >/usr/local/bin/docker-machine && \
+# chmod +x /usr/local/bin/docker-machine
+
+# service docker stop
+# echo manual | sudo tee /etc/init/docker.override
