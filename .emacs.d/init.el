@@ -71,3 +71,4 @@
 (require 'init-dash-at-point)
 (require 'init-protobuf)
 (require 'init-terraform)
+(require 'init-magit)

@@ -16,7 +16,7 @@
  '(flycheck-navigation-minimum-level (quote error))
  '(package-selected-packages
    (quote
-    (terraform-mode flycheck-protobuf protobuf-mode dash-at-point helm-ag ag markdown-mode+ coffee-mode yaml-mode go-eldoc flycheck-gometalinter go-autocomplete go-mode json-mode popwin enh-ruby-mode highlight-indentation auto-complete yasnippet flycheck helm-projectile projectile helm maxframe color-theme-sanityinc-tomorrow exec-path-from-shell fullframe)))
+    (magit terraform-mode flycheck-protobuf protobuf-mode dash-at-point helm-ag ag markdown-mode+ coffee-mode yaml-mode go-eldoc flycheck-gometalinter go-autocomplete go-mode json-mode popwin enh-ruby-mode highlight-indentation auto-complete yasnippet flycheck helm-projectile projectile helm maxframe color-theme-sanityinc-tomorrow exec-path-from-shell fullframe)))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
