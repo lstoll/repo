@@ -5,5 +5,12 @@
 
     "ruby.lint": {
         "ruby": true //Runs ruby -wc
-    }
+    },
+
+    "search.exclude": {
+        "bazel-*/**": true
+    },
+
+    "go.formatTool": "goimports",
+    "go.gocodeAutoBuild": true
 }
