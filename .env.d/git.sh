@@ -3,3 +3,5 @@ function dirtysrc {
 }
 
 alias gup='git fetch origin --prune && git rebase origin/$(git rev-parse --abbrev-ref HEAD)'
+
+alias gbranchclean='git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d'
