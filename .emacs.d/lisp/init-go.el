@@ -31,6 +31,18 @@
 ;; Only run the 'fast' linters
 (setq flycheck-gometalinter-fast t)
 
+;; Hook to run gazel on save if project has a .gazelcfg.json in the
+;; projectile root
+(defun gazel-update-BUILD ()
+  "Run gazel in current dir if project has gazel configured"
+  (interactive)
+  (let* ((gzcfgpath (concat (projectile-project-root) ".gazelcfg.json"))
+	 ;; Run for the project, but only what's in the current dir
+	 (gazel-args (list "-root" (projectile-project-root))))
+    (when (file-exists-p gzcfgpath)
+      (message "Calling gazel %s" gazel-args)
+      (call-process "gazel" nil nil nil gazel-args))))
+
 (defun go-mode-setup ()
   (go-eldoc-setup)
   ;; Use goimports instead of go-fmt
@@ -42,6 +54,8 @@
 
   (setq ac-sources '(ac-source-go ac-source-yasnippet))
 
+  ;; Only the first match here will be run. This is annoying becuase
+  ;; we want to build, then metalint
   (setq flycheck-checkers '(go-build go-test gometalinter))
   )
 (add-hook 'go-mode-hook 'go-mode-setup)
