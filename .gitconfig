@@ -27,7 +27,7 @@
 	filename = bold green
 	match = black yellow
 [commit]
-	#gpgsign = true
+	gpgsign = true
 
 [include]
   # For username / creds / etc
