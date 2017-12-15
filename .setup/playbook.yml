@@ -16,17 +16,17 @@
     apt: name={{item}} state=latest
     with_items:
       - ansible
-      - google-chrome-stable
+#      - google-chrome-stable
       - awscli
       - gnupg2
       - gnupg-agent
       #- pinentry-gnome3
       - pinentry-gtk2
-      - scdaemon
-      - pcscd
-      - yubikey-personalization
-      - libusb-1.0-0-dev
-      - heroku
+#      - scdaemon
+#      - pcscd
+#      - yubikey-personalization
+#      - libusb-1.0-0-dev
+#      - heroku
       #- shellcheck
       - bazel
       - libssl-dev
@@ -40,47 +40,46 @@
       - vim
       - gnome-contacts
       - shutter
-      - docker-engine
-  - name: Install docker-compose
-    get_url: url=https://github.com/docker/compose/releases/download/1.8.1/docker-compose-Linux-x86_64 dest=/usr/local/bin/docker-compose mode=0755
-  - name: Build gnome-keyring
-    command: make chdir=/usr/share/doc/git/contrib/credential/gnome-keyring creates=/usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
+#      - docker-engine
+#  - name: Install docker-compose
+#    get_url: url=https://github.com/docker/compose/releases/download/1.8.1/docker-compose-Linux-x86_64 dest=/usr/local/bin/docker-compose mode=0755
+#  - name: Build gnome-keyring
+#    command: make chdir=/usr/share/doc/git/contrib/credential/gnome-keyring creates=/usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
   # TODO - set mode of helper to 0755
-
 
   - name: Find go version
     command: sh -c "/usr/local/go/bin/go version | grep -Po '(?<=go)([\w\.]+)'"
     register: goversion
     ignore_errors: True
   - name: Download go tarball
-    get_url: url="https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz" dest="/tmp/go.tgz"
-    when: goversion.stdout != "1.7.3"
+    get_url: url="https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz" dest="/tmp/go.tgz"
+    when: goversion.stdout != "1.9.1"
     register: got_go
   - name: Remove old go install
     command: rm -fr /usr/local/go
     when: got_go.changed
   - name: Extract go tarball
     unarchive: src=/tmp/go.tgz dest=/usr/local
-    when: goversion.stdout != "1.7.3"
+    when: goversion.stdout != "1.9.1"
 
 - hosts: all
   become: true
-  become_user: lincoln.stoll
+  become_user: lstoll
   tasks:
-  - name: Set gnome keyboard mappings
-    command: gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
+#  - name: Set gnome keyboard mappings
+#    command: gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
 
-  - name: Install rbenv
-    git: repo=https://github.com/rbenv/rbenv.git dest={{ansible_env.HOME}}/.rbenv update=yes
+#  - name: Install rbenv
+#    git: repo=https://github.com/rbenv/rbenv.git dest={{ansible_env.HOME}}/.rbenv update=yes
 
-  - name: Install ruby-build
-    git: repo=https://github.com/rbenv/ruby-build.git dest={{ansible_env.HOME}}/.rbenv/plugins/ruby-build update=yes
+#  - name: Install ruby-build
+#    git: repo=https://github.com/rbenv/ruby-build.git dest={{ansible_env.HOME}}/.rbenv/plugins/ruby-build update=yes
 
   - name: Install go linting tools
-    shell: go get -u github.com/alecthomas/gometalinter && gometalinter -i
+    command: bash -lc "go get -u github.com/alecthomas/gometalinter && gometalinter -i"
 
   - name: Install go dev deps
-    shell: go get -u {{item}}
+    command: bash -lc "go get -u {{item}}"
     with_items:
       - github.com/nsf/gocode
       - github.com/rogpeppe/godef
