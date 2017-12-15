@@ -1,74 +1,145 @@
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
 (package-initialize)
 
+;; Require reasonable emacs version.
 (let ((minver 24))
   (unless (>= emacs-major-version minver)
     (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
 
+;; add dir with our custom code
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-(require 'init-benchmarking) ;; Measure startup time
 
-(defconst *spell-check-support-enabled* nil) ;; Enable with t if you prefer
-(defconst *is-a-mac* (eq system-type 'darwin))
-
+;; setup where emacs reads/saves its customizations. This stops it
+;; from dumping them in here.
 (setq custom-file "~/.emacs.d/emacs-custom.el")
 (load custom-file)
 
+;; start server for client to connect to
 (server-start)
 
-;;----------------------------------------------------------------------------
-;; Bootstrap config
-;;----------------------------------------------------------------------------
-(require 'init-utils)
-(require 'init-customizations)
-(require 'init-site-lisp) ;; Must come before elpa, as it may provide package.el
-(require 'init-elpa)      ;; Machinery for installing required packages
-(require 'init-exec-path) ;; Set up $PATH
+;; Bring in our basic package manager, ensure installed packages are
+;; installed.
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+			 ("marmalade" . "https://marmalade-repo.org/packages/")
+			 ("melpa" . "https://melpa.org/packages/")))
 
-(require 'init-theme)
-(require 'init-keybindings) ;; Set up our keybindings
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
-(if (eq system-type 'gnu/linux)
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
-  (split-window-right)
-  )
+;;
+;; Start emacs config tweaks
+;;
 
-(if (eq system-type 'darwin)
-  (require 'init-maxframe) ;; Get that big size
-  )
+(menu-bar-mode -1)
+
+;; Window switching. (C-x o goes to the next window)
+(windmove-default-keybindings) ;; Shift+direction
+
+;; Window switching on terminal.
+(global-set-key (kbd "C-c <left>")  'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <up>")    'windmove-up)
+(global-set-key (kbd "C-c <down>")  'windmove-down)
 
 (if (not (display-graphic-p))
     (progn (require 'mwheel)
-	   (require 'mouse)
-	   (xterm-mouse-mode t)
-	   (mouse-wheel-mode t)
-	   (global-set-key [mouse-4] 'previous-line)
-	   (global-set-key [mouse-5] 'next-line)))
+		   (require 'mouse)
+		   (xterm-mouse-mode t)
+		   (mouse-wheel-mode t)       
+		   (setq scroll-margin 1
+				 scroll-conservatively 0
+				 scroll-up-aggressively 0.01
+				 scroll-down-aggressively 0.01)))
 
-;;----------------------------------------------------------------------------
-;; Load configs for specific features and modes
-;;----------------------------------------------------------------------------
+;;
+;; Start custom packages
+;;
 
-(require 'init-ido)
-(require 'init-helm)
-(require 'init-projectile)
-(require 'init-flycheck)
-(require 'init-yasnippet)
-(require 'init-auto-complete)
-(require 'init-highlight-indentation)
-(require 'init-ruby)
-(require 'init-popwin)
-(require 'init-json)
-(require 'init-go)
-(require 'init-yaml)
-(require 'init-coffee)
-(require 'init-markdown)
-(require 'init-ag)
-(require 'init-dash-at-point)
-(require 'init-protobuf)
-(require 'init-terraform)
-(require 'init-magit)
+(use-package color-theme-sanityinc-tomorrow
+  :ensure t
+  :config
+  (color-theme-sanityinc-tomorrow-night))
+
+(use-package ivy
+  :ensure t
+  :config
+  (ivy-mode 1)
+  (setq ivy-height 20))
+
+(use-package swiper
+  :ensure t
+  :bind ("\C-s" . swiper))
+
+(use-package counsel
+  :ensure t)
+
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-global-mode)
+  (setq projectile-enable-caching t))
+
+(use-package counsel-projectile
+  :ensure t
+  :config (counsel-projectile-on))
+
+(use-package auto-complete
+  :ensure t
+  :config
+  (global-auto-complete-mode t)
+  (ac-config-default))
+
+(use-package yasnippet
+  :ensure t
+  :config
+  ;; remove default dirs, only do our explict stuff
+  (setq yas-snippet-dirs (remq 'yas-installed-snippets-dir yas-snippet-dirs))
+  (setq yas-snippet-dirs
+      '("~/.emacs.d/snippets/personal"
+        "~/.emacs.d/snippets/go-mode"
+        ))
+  (yas-global-mode 1))
+
+(use-package flycheck
+  :ensure t
+  :config
+  (setq flycheck-highlighting-mode 'lines)
+  (set-face-attribute 'flycheck-error nil
+		      :foreground nil
+		      :background "red")
+  (set-face-attribute 'flycheck-error nil
+		      :foreground nil
+		      :background "yellow")
+  (global-flycheck-mode))
+
+(use-package go-mode
+  :ensure t
+  :hook (go-mode . go-mode-setup))
+
+(use-package go-autocomplete
+  :ensure t
+  :config
+  (setq-default ac-go-expand-arguments-into-snippets))
+
+(use-package go-eldoc
+  :ensure t)
+
+;;
+;; Setup functions
+;;
+
+(defun go-mode-setup ()
+  (go-eldoc-setup)
+  ;; Use goimports instead of go-fmt
+  (setq gofmt-command "goimports")
+  ;; Call Gofmt before saving
+  (add-hook 'before-save-hook 'gofmt-before-save)
+
+  (setq tab-width 4)
+
+  (setq ac-sources '(ac-source-go ac-source-yasnippet))
+
+  ;; Only the first match here will be run. This is annoying becuase
+  ;; we want to build, then metalint
+  (setq flycheck-checkers '(go-build go-test gometalinter)))
+
