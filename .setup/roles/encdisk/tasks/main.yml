@@ -2,6 +2,15 @@
   apt:
     name: dropbear-initramfs
     state: latest
+  register: apt_dropbear_initramfs
+
+- name: Re-use existing host keys
+  command: /usr/lib/dropbear/dropbearconvert openssh dropbear /etc/ssh/ssh_host_{{item}}_key /etc/dropbear-initramfs/dropbear_{{item}}_host_key
+  with_items:
+    - rsa
+    - ecdsa
+  register: host_keys
+  when: apt_dropbear_initramfs.changed
 
 - name: remote SSH unlock keys
   template:
@@ -13,4 +22,4 @@
 
 - name: Update initramfs
   command: update-initramfs -u
-  when: dropbear_keys.changed
+  when: dropbear_keys.changed or host_keys.changed
