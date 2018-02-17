@@ -1,7 +1,10 @@
 ---
-- hosts: all
+- hosts: workstations
   become: true
   become_user: root
+  roles:
+    - go-install
+    - git-install
   tasks:
   - apt_key: url=https://dl.google.com/linux/linux_signing_key.pub state=present
   - apt_repository: repo='deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' state=present filename='google-chrome'
@@ -15,6 +18,7 @@
   - name: install packages
     apt: name={{item}} state=latest
     with_items:
+      - build-essential
       - ansible
 #      - google-chrome-stable
       - awscli
@@ -40,31 +44,15 @@
       - vim
       - gnome-contacts
       - shutter
+      - tmux
 #      - docker-engine
 #  - name: Install docker-compose
 #    get_url: url=https://github.com/docker/compose/releases/download/1.8.1/docker-compose-Linux-x86_64 dest=/usr/local/bin/docker-compose mode=0755
-#  - name: Build gnome-keyring
-#    command: make chdir=/usr/share/doc/git/contrib/credential/gnome-keyring creates=/usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
   # TODO - set mode of helper to 0755
 
-  - name: Find go version
-    command: sh -c "/usr/local/go/bin/go version | grep -Po '(?<=go)([\w\.]+)'"
-    register: goversion
-    ignore_errors: True
-  - name: Download go tarball
-    get_url: url="https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz" dest="/tmp/go.tgz"
-    when: goversion.stdout != "1.9.1"
-    register: got_go
-  - name: Remove old go install
-    command: rm -fr /usr/local/go
-    when: got_go.changed
-  - name: Extract go tarball
-    unarchive: src=/tmp/go.tgz dest=/usr/local
-    when: goversion.stdout != "1.9.1"
-
-- hosts: all
+- hosts: workstations
   become: true
-  become_user: lstoll
+  become_user: "{{username}}"
   tasks:
 #  - name: Set gnome keyboard mappings
 #    command: gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
@@ -84,6 +72,20 @@
       - github.com/nsf/gocode
       - github.com/rogpeppe/godef
       - golang.org/x/tools/cmd/goimports
+
+- hosts: gui-workstations
+  become: true
+  become_user: root
+  roles:
+    - vscode-install
+
+- hosts: gui-workstations
+  become: true
+  become_user: "{{username}}"
+  roles:
+    - name: gnome
+      when: ansible_env.DISPLAY is defined
+    - vscode
 
 # xenial kernel
 # nomachine

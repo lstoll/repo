@@ -1,0 +1,8 @@
+[targets]
+lstoll-workstation ansible_connection=local username=lstoll
+
+[workstations]
+lstoll-workstation
+
+[gui-workstations]
+lstoll-workstation

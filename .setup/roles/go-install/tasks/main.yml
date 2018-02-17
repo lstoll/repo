@@ -1,0 +1,21 @@
+- name: Find go version
+  command: sh -c "/usr/local/go/bin/go version | grep -Po '(?<=go)([\w\.]+)'"
+  register: goversion
+  ignore_errors: True
+
+- name: Download go tarball
+  get_url:
+    url: "https://storage.googleapis.com/golang/go{{go_version}}.linux-amd64.tar.gz"
+    dest: "/tmp/go{{go_version}}.tgz"
+  when: goversion.stdout != go_version
+  register: got_go
+
+- name: Remove old go install
+  command: rm -fr /usr/local/go
+  when: got_go.changed
+
+- name: Extract go tarball
+  unarchive:
+    src: /tmp/go{{go_version}}.tgz
+    dest: /usr/local
+  when: got_go.changed

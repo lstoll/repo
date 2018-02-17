@@ -1,7 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-. /etc/lsb-release
+if [ -f /etc/lsb-release ]; then
+    . /etc/lsb-release
+fi
+
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+fi
 
 # TODO - why do we have to do this.
 function finish {
@@ -16,14 +22,15 @@ if [ -f ~/.netrc ]; then
 fi
 
 if [ ! -f /usr/bin/ansible-playbook ]; then
-    if [ "$DISTRIB_CODENAME" == "xenial" ]; then
-        sudo apt-get install -y software-properties-common
-        sudo apt-add-repository -y ppa:ansible/ansible
-    fi
-    sudo apt-get update || true 
+#    if [ "$ID" == "debian" ]; then
+        #sudo apt-get install -y software-properties-common
+        #sudo apt-add-repository -y ppa:ansible/ansible
+    #fi
+    sudo apt-get update
     sudo apt-get install -y ansible
 fi
 
-sudo ansible-playbook -i "localhost," -c local playbook.yml
+#sudo ansible-playbook -i "$(hostname)," -c local playbook.yml
+sudo ansible-playbook -i inventory --limit $(hostname) playbook.yml
 
 rm -f playbook.retry

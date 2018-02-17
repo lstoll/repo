@@ -1,0 +1,22 @@
+- name: Add Microsoft APT key
+  apt_key:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+  register: aptkey
+
+- name: Add VSCode repository
+  apt_repository:
+    repo: deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main
+    state: present
+    filename: vscode
+  register: aptrepo
+
+- name: apt update
+  apt:
+    update_cache: yes
+  when: aptkey.changed or aptrepo.changed
+
+- name: Install Visual Studio Code
+  apt:
+    name: code
+    state: latest

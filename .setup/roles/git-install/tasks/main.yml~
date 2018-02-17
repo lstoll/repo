@@ -1,0 +1,10 @@
+- stat:
+    path: /usr/share/doc/git/contrib/credential/gnome-keyring
+  register: gnome_keyring_dir
+
+- name: Build gnome-keyring
+  command: make
+  args:
+    chdir: /usr/share/doc/git/contrib/credential/gnome-keyring
+    creates: /usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
+  when: gnome_keyring_dir.exists
