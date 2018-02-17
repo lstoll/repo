@@ -1,0 +1,16 @@
+- name: SSH unlock enc FS
+  apt:
+    name: dropbear-initramfs
+    state: latest
+
+- name: remote SSH unlock keys
+  template:
+    src: authorized_keys.j2
+    dest: /etc/dropbear-initramfs/authorized_keys
+    owner: root
+    mode: 0644
+  register: dropbear_keys
+
+- name: Update initramfs
+  command: update-initramfs -u
+  when: dropbear_keys.changed

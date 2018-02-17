@@ -1,5 +1,5 @@
 [targets]
-lstoll-workstation ansible_connection=local username=lstoll
+lstoll-workstation ansible_connection=local username=lstoll ssh_unlock_encroot=true
 
 [workstations]
 lstoll-workstation

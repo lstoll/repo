@@ -5,6 +5,8 @@
   roles:
     - go-install
     - git-install
+    - role: encdisk
+      when: "{{ssh_unlock_encroot}}"
   tasks:
   - apt_key: url=https://dl.google.com/linux/linux_signing_key.pub state=present
   - apt_repository: repo='deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' state=present filename='google-chrome'
@@ -18,6 +20,9 @@
   - name: install packages
     apt: name={{item}} state=latest
     with_items:
+      - curl
+      - lvm2
+      - thin-provisioning-tools
       - build-essential
       - ansible
 #      - google-chrome-stable
@@ -53,6 +58,7 @@
 - hosts: workstations
   become: true
   become_user: "{{username}}"
+  roles:
   tasks:
 #  - name: Set gnome keyboard mappings
 #    command: gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
@@ -62,6 +68,11 @@
 
 #  - name: Install ruby-build
 #    git: repo=https://github.com/rbenv/ruby-build.git dest={{ansible_env.HOME}}/.rbenv/plugins/ruby-build update=yes
+  - name: Clone depot-tools
+    git:
+      repo: https://chromium.googlesource.com/chromium/tools/depot_tools.git
+      dest: "{{ansible_env.HOME}}/src/chromium.googlesource.com/chromium/tools/depot_tools"
+      update: yes
 
   - name: Install go linting tools
     command: bash -lc "go get -u github.com/alecthomas/gometalinter && gometalinter -i"
