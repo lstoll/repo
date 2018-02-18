@@ -1,0 +1,16 @@
+- name: Install LXDE
+  apt:
+    name: lxde
+    state: latest
+
+- name: Install chrome remote desktop
+  apt:
+    deb: https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
+
+- name: Write desktop config
+  copy:
+    content: exec /usr/bin/startlxde
+    dest: "/home/{{username}}/.chrome-remote-desktop-session"
+    owner: "{{username}}"
+
+# Needs manual setup with /opt/google/chrome-remote-desktop/start-host

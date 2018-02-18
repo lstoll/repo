@@ -6,3 +6,6 @@ lstoll-workstation
 
 [gui-workstations]
 lstoll-workstation
+
+[headless-gui-workstations]
+lstoll-workstation

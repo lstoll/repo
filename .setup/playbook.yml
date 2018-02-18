@@ -31,10 +31,6 @@
       - gnupg-agent
       #- pinentry-gnome3
       - pinentry-gtk2
-#      - scdaemon
-#      - pcscd
-#      - yubikey-personalization
-#      - libusb-1.0-0-dev
 #      - heroku
       #- shellcheck
       - bazel
@@ -89,6 +85,16 @@
   become_user: root
   roles:
     - vscode-install
+
+- hosts: headless-gui-workstations
+  become: true
+  become_user: root
+  roles:
+    - chrome-remote-desktop
+  tasks:
+    - name: Disable GUI login
+      # inverse is graphical.target
+      command: systemctl set-default multi-user.target
 
 - hosts: gui-workstations
   become: true
