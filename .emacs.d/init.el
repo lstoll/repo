@@ -81,7 +81,7 @@
 
 (use-package counsel-projectile
   :ensure t
-  :config (counsel-projectile-on))
+  :config (counsel-projectile-mode))
 
 (use-package auto-complete
   :ensure t
